@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.fabiovokrri.nfccards.ui.home.HomeScreen
 import com.fabiovokrri.nfccards.ui.theme.NFCCardsTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +14,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NFCCardsTheme {
-
+                HomeScreen()
             }
         }
     }
