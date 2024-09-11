@@ -2,13 +2,14 @@ package com.fabiovokrri.nfccards.ui.addmodify
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fabiovokrri.nfccards.R
@@ -70,14 +72,15 @@ fun AddModifyScreen(
         ) {
             val focusManager = LocalFocusManager.current
 
-            Image(
-                painter = painterResource(id = R.drawable.nfc_logo),
-                contentDescription = stringResource(R.string.nfc_logo),
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .height(128.dp)
-                    .padding(16.dp)
-            )
+            Box(modifier = Modifier.height(96.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.nfc_logo),
+                    contentDescription = stringResource(R.string.nfc_logo),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .padding(16.dp)
+                )
+            }
             Text(text = stringResource(R.string.nfc_instructions))
 
             Spacer(modifier = Modifier.height(64.dp))
@@ -86,12 +89,7 @@ fun AddModifyScreen(
                 value = currentCard.name,
                 onValueChange = { addModifyViewModel.updateName(it) },
                 label = { Text(text = stringResource(R.string.card_name)) },
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        addModifyViewModel.save()
-                        focusManager.clearFocus()
-                    }
-                )
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
             )
         }
     }

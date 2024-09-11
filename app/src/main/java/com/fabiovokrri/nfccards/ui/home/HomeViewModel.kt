@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -20,24 +21,34 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() {
 
     private val _cards: Flow<List<Card>> = cardsRepository.getAll()
-    val uiState: StateFlow<HomeUiState> = try {
-        _cards.map { HomeUiState.Success(it) }.stateIn(
+    val cardsListState: StateFlow<CardsListState> = try {
+        _cards.map { CardsListState.Success(it) }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = HomeUiState.Loading
+            initialValue = CardsListState.Loading
         )
     } catch (error: Error) {
-        MutableStateFlow<HomeUiState>(
-            HomeUiState.Error(error.message ?: "Unknown error")
+        MutableStateFlow<CardsListState>(
+            CardsListState.Error(error.message ?: "Unknown error")
         )
     }
 
-    fun upsert(card: Card) = viewModelScope.launch {
-        cardsRepository.upsert(card)
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    fun showDeleteDialog(card: Card) {
+        _uiState.value = UiState(showDeleteDialog = true, cardToBeDeleted = card)
     }
 
-    fun delete(card: Card) = viewModelScope.launch {
-        cardsRepository.delete(card)
+    fun closeDeleteDialog() {
+        _uiState.value = UiState(showDeleteDialog = false, cardToBeDeleted = null)
+    }
+
+    fun delete() {
+        val card = uiState.value.cardToBeDeleted ?: return
+        viewModelScope.launch {
+            cardsRepository.delete(card)
+        }
     }
 
     companion object {
@@ -53,8 +64,13 @@ class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() 
     }
 }
 
-sealed class HomeUiState {
-    data object Loading : HomeUiState()
-    data class Success(val cards: List<Card>) : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
+data class UiState(
+    val showDeleteDialog: Boolean = false,
+    val cardToBeDeleted: Card? = null,
+)
+
+sealed class CardsListState {
+    data object Loading : CardsListState()
+    data class Success(val cards: List<Card>) : CardsListState()
+    data class Error(val message: String) : CardsListState()
 }

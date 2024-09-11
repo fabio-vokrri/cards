@@ -1,14 +1,18 @@
 package com.fabiovokrri.nfccards.ui.addmodify
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.toRoute
 import com.fabiovokrri.nfccards.CardsApplication
 import com.fabiovokrri.nfccards.data.CardsRepository
 import com.fabiovokrri.nfccards.data.model.Card
+import com.fabiovokrri.nfccards.ui.AddModify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,10 +21,12 @@ import kotlinx.coroutines.launch
 
 class AddModifyViewModel(
     private val cardsRepository: CardsRepository,
-    cardId: Int?,
+    private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
 ) : ViewModel() {
+
     private val _currentCard = MutableStateFlow(CardState())
     val currentCard: StateFlow<CardState> = _currentCard.asStateFlow()
+    private val cardId = savedStateHandle.toRoute<AddModify>().cardId
 
     init {
         if (cardId != null) {
@@ -44,15 +50,20 @@ class AddModifyViewModel(
         it.copy(data = data)
     }
 
-    fun save() = viewModelScope.launch {
-        cardsRepository.upsert(_currentCard.value.toCard())
+    fun save() {
+        if (_currentCard.value.name.isBlank()) return
+
+        viewModelScope.launch {
+            cardsRepository.upsert(_currentCard.value.toCard())
+        }
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as CardsApplication)
-                AddModifyViewModel(application.container.cardsRepository, null)
+                val savedStateHandle = createSavedStateHandle()
+                AddModifyViewModel(application.container.cardsRepository, savedStateHandle)
             }
         }
     }
