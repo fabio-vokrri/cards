@@ -21,11 +21,12 @@ import kotlinx.coroutines.launch
 
 class AddModifyViewModel(
     private val cardsRepository: CardsRepository,
-    private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
+    savedStateHandle: SavedStateHandle = SavedStateHandle(),
 ) : ViewModel() {
 
     private val _currentCard = MutableStateFlow(CardState())
     val currentCard: StateFlow<CardState> = _currentCard.asStateFlow()
+
     private val cardId = savedStateHandle.toRoute<AddModify>().cardId
 
     init {
@@ -61,8 +62,8 @@ class AddModifyViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as CardsApplication)
                 val savedStateHandle = createSavedStateHandle()
+                val application = (this[APPLICATION_KEY] as CardsApplication)
                 AddModifyViewModel(application.container.cardsRepository, savedStateHandle)
             }
         }

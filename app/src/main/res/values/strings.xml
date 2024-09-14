@@ -1,17 +1,18 @@
 <resources>
     <string name="app_name">NFC Cards</string>
     <string name="add_card">Add new NFC card</string>
-    <string name="title">CARDS</string>
     <string name="loading_message">Loading your cards</string>
     <string name="error_message">Something went wrong!</string>
     <string name="empty_list_message">Nothing to show here...</string>
     <string name="new_card">New Card</string>
     <string name="edit_card">Edit Card</string>
     <string name="nfc_logo">NFC Logo</string>
-    <string name="nfc_instructions">Tap with the back of your phone on the card</string>
+    <string name="nfc_instructions">Tap your NFC Card tag\nwith the back of your phone</string>
     <string name="card_name">Card Name</string>
-    <string name="delete_dialog_title">Delete this Card?</string>
-    <string name="delete_dialog_message">Are you sure you want to delete this card?</string>
+    <string name="delete_dialog_title">Delete %s Card?</string>
+    <string name="delete_dialog_message">Are you sure you want to delete this card?\nOnce deleted cannot be recovered!</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="back">Back</string>
+    <string name="ready_to_use">Ready to use</string>
 </resources>

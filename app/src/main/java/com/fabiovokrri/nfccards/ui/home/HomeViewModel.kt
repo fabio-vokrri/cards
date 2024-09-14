@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() {
@@ -44,10 +45,18 @@ class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() 
         _uiState.value = UiState(showDeleteDialog = false, cardToBeDeleted = null)
     }
 
-    fun delete() {
+    fun deleteSelectedCard() {
         val card = uiState.value.cardToBeDeleted ?: return
+        _uiState.value = UiState() // reset ui state
+
         viewModelScope.launch {
             cardsRepository.delete(card)
+        }
+    }
+
+    fun select(card: Card?) {
+        _uiState.update {
+            it.copy(currentSelectedCard = card)
         }
     }
 
@@ -67,6 +76,7 @@ class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() 
 data class UiState(
     val showDeleteDialog: Boolean = false,
     val cardToBeDeleted: Card? = null,
+    val currentSelectedCard: Card? = null,
 )
 
 sealed class CardsListState {
