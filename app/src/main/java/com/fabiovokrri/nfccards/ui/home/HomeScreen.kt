@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,9 +69,7 @@ fun HomeScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) }
-            )
+            TopAppBar(title = { Text(stringResource(R.string.app_name)) })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onNavigateToAddModify(null) }) {
@@ -112,7 +111,7 @@ private fun LoadingScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator()
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
         Text(text = stringResource(R.string.loading_message))
     }
 }
@@ -162,8 +161,8 @@ private fun CardsScreen(
         state = pagerState,
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = 32.dp),
-        pageSpacing = 16.dp,
+        contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_large)),
+        pageSpacing = dimensionResource(id = R.dimen.padding_medium),
     ) { index ->
         val card = cards[index]
         val currentIndex = pagerState.settledPage
@@ -195,13 +194,13 @@ private fun CardsScreen(
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_small))
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = card.name, Modifier.padding(16.dp),
+                        text = card.name, Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -214,15 +213,15 @@ private fun CardsScreen(
                 Image(
                     modifier = Modifier
                         .rotate(90f)
-                        .height(48.dp)
+                        .height(dimensionResource(id = R.dimen.padding_large))
                         .aspectRatio(1f),
                     painter = painterResource(
                         if (isSystemInDarkTheme()) R.drawable.wifi_light
-                        else R.drawable.wifi_light
+                        else R.drawable.wifi_dark
                     ),
                     contentDescription = null,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
                 Text(text = stringResource(R.string.ready_to_use))
                 Spacer(modifier = Modifier.weight(1.5f))
             }

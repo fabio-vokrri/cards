@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -76,7 +77,7 @@ fun AddModifyScreen(
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
                 modifier = Modifier
-                    .padding(32.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_large))
                     .aspectRatio(10 / 16f),
                 shape = MaterialTheme.shapes.large,
                 color = MaterialTheme.colorScheme.primaryContainer
@@ -90,7 +91,7 @@ fun AddModifyScreen(
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(dimensionResource(id = R.dimen.padding_medium)),
                         value = currentCard.name,
                         onValueChange = { addModifyViewModel.updateName(it) },
                         label = { Text(text = stringResource(R.string.card_name)) },
@@ -102,19 +103,19 @@ fun AddModifyScreen(
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
                         )
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
                     Image(
                         modifier = Modifier
                             .height(72.dp)
                             .aspectRatio(1f)
-                            .padding(16.dp),
+                            .padding(dimensionResource(id = R.dimen.padding_medium)),
                         painter = painterResource(
                             if (isSystemInDarkTheme()) R.drawable.nfc_logo_light
                             else R.drawable.nfc_logo_dark
                         ),
                         contentDescription = stringResource(R.string.nfc_logo),
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
                     Text(
                         text = stringResource(R.string.nfc_instructions),
                         textAlign = TextAlign.Center

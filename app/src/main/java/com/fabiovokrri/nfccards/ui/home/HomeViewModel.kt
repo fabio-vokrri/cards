@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,17 +23,14 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val cardsRepository: CardsRepository) : ViewModel() {
 
     private val _cards: Flow<List<Card>> = cardsRepository.getAll()
-    val cardsListState: StateFlow<CardsListState> = try {
-        _cards.map { CardsListState.Success(it) }.stateIn(
+    val cardsListState: StateFlow<CardsListState> = _cards
+        .map<List<Card>, CardsListState> { CardsListState.Success(it) }
+        .catch { emit(CardsListState.Error(it.message ?: "Unknown error")) }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = CardsListState.Loading
         )
-    } catch (error: Error) {
-        MutableStateFlow<CardsListState>(
-            CardsListState.Error(error.message ?: "Unknown error")
-        )
-    }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

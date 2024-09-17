@@ -30,16 +30,14 @@ class AddModifyViewModel(
     private val cardId = savedStateHandle.toRoute<AddModify>().cardId
 
     init {
-        if (cardId != null) {
-            viewModelScope.launch {
-                val card = cardsRepository.getById(cardId)
+        if (cardId != null) viewModelScope.launch {
+            val card = cardsRepository.getById(cardId)
 
-                _currentCard.value = CardState(
-                    card.id,
-                    card.name,
-                    card.data
-                )
-            }
+            _currentCard.value = CardState(
+                card.id,
+                card.name,
+                card.data
+            )
         }
     }
 
